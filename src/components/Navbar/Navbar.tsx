@@ -9,7 +9,7 @@ const Navbar = () => {
       </div>
       <ul className="navbar-menu flex space-x-4">
         <li>
-          <Link href="/">Email</Link>
+          <Link href="/send-email">Email</Link>
         </li>
         <li>
           <Link href="/login">Login</Link>
