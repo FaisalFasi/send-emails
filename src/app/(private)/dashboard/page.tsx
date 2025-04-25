@@ -2,6 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePoolStore } from "@/store/usePoolStore";
+import PoolNavigation from "@/components/PoolNavigation/PoolNavigation";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 export default function AdminPage() {
@@ -14,15 +15,14 @@ export default function AdminPage() {
   }, []);
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-
+    <div className="p-4">
       <button
         onClick={createPool}
         className="bg-blue-500 text-white px-4 py-2 rounded mb-6"
       >
         Create New Pool
       </button>
+      <PoolNavigation />
 
       {Object.entries(pools).map(([poolId, pool]) => {
         const availableInvestors = allInvestors.filter(
@@ -30,7 +30,7 @@ export default function AdminPage() {
         );
 
         return (
-          <div key={poolId} className="border p-4 rounded-lg mb-6 relative">
+          <div key={poolId} className="border p-4 rounded-lg mb-6">
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold">{pool.name}</h2>
               <button
@@ -40,7 +40,6 @@ export default function AdminPage() {
                 Delete Pool
               </button>
             </div>
-
             {pool.weeks.map((week, weekIndex) => (
               <div key={weekIndex} className="mb-4 p-3 bg-gray-50 rounded">
                 <h3 className="font-semibold mb-2">Week {weekIndex + 1}</h3>
@@ -84,7 +83,6 @@ export default function AdminPage() {
           </div>
         );
       })}
-
       <ConfirmationModal
         isOpen={!!poolToDelete}
         onClose={() => setPoolToDelete(null)}

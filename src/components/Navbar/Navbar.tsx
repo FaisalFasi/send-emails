@@ -21,6 +21,9 @@ const Navbar = () => {
         {currentUser ? (
           <>
             <li>
+              <Link href="/founder">Founder</Link>
+            </li>
+            <li>
               <Link href="/dashboard">DB</Link>
             </li>
             <li>

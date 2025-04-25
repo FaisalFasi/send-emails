@@ -3,13 +3,22 @@ export type Investor = {
   id: string;
   name: string;
   avatar: string;
-  company: string;
+  company?: string;
   contact?: string;
 };
 
 export type InvestorWeek = Investor[]; // Max 7 investors
+
 export type InvestorPool = {
   id: string;
   name: string;
-  weeks: InvestorWeek[]; // Exactly 5 weeks
+  weeks: Investor[][]; // 5 weeks × 7 investors
+};
+
+export type Founder = {
+  id: string;
+  name: string;
+  avatar?: string;
+  company?: string;
+  assignedInvestors: string[]; // Array of investor IDs
 };

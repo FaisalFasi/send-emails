@@ -1,20 +1,7 @@
 // stores/usePoolStore.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-
-type Investor = {
-  id: string;
-  name: string;
-  avatar: string;
-  company?: string;
-  contact?: string;
-};
-
-type InvestorPool = {
-  id: string;
-  name: string;
-  weeks: Investor[][]; // 5 weeks × 7 investors
-};
+import { Founder, Investor, InvestorPool } from "@/types/InvestorsTypes";
 
 type PoolStore = {
   pools: Record<string, InvestorPool>;
@@ -29,13 +16,20 @@ type PoolStore = {
   ) => void;
   initialize: () => void;
   deletePool: (poolId: string) => void;
+
+  //founder
+  founders: Founder[];
+  assignInvestorToFounder: (founderId: string, investorId: string) => void;
+  unassignInvestorFromFounder: (founderId: string, investorId: string) => void;
 };
 
 export const usePoolStore = create<PoolStore>()(
   persist(
     (set, get) => ({
       pools: {},
+      founders: [],
       allInvestors: [],
+
       initialize: () => {
         if (get().allInvestors.length > 0) return;
 
@@ -128,6 +122,34 @@ export const usePoolStore = create<PoolStore>()(
           delete newPools[poolId];
           return { pools: newPools };
         });
+      },
+
+      assignInvestorToFounder: (founderId, investorId) => {
+        set((state) => ({
+          founders: state.founders.map((founder) =>
+            founder.id === founderId
+              ? {
+                  ...founder,
+                  assignedInvestors: [...founder.assignedInvestors, investorId],
+                }
+              : founder
+          ),
+        }));
+      },
+
+      unassignInvestorFromFounder: (founderId, investorId) => {
+        set((state) => ({
+          founders: state.founders.map((founder) =>
+            founder.id === founderId
+              ? {
+                  ...founder,
+                  assignedInvestors: founder.assignedInvestors.filter(
+                    (id) => id !== investorId
+                  ),
+                }
+              : founder
+          ),
+        }));
       },
     }),
     {

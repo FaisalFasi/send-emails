@@ -1,6 +1,6 @@
 // components/InvestorModal.tsx
 "use client";
-import { Investor } from "@/types/InvestorsPoolTypes";
+import { Investor } from "@/types/InvestorsTypes";
 import { useState } from "react";
 
 export default function InvestorModal({
