@@ -5,29 +5,40 @@ import { Founder, Investor, InvestorPool } from "@/types/InvestorsTypes";
 
 type PoolStore = {
   pools: Record<string, InvestorPool>;
+  founders: Founder[];
   allInvestors: Investor[];
-  createPool: () => string;
-  addToPool: (poolId: string, week: number, investorId: string) => void;
+
+  // Pool Management
+  createPool: (name: string, founderIds?: string[]) => string;
+  addWeek: (poolId: string) => void;
+  removeWeek: (poolId: string, weekNumber: number) => void;
+  deletePool: (poolId: string) => void;
+
+  // Investor Assignment
+  addToPool: (poolId: string, weekIndex: number, investorId: string) => void;
   updateInvestor: (
     poolId: string,
-    week: number,
+    weekIndex: number,
     investorId: string,
     updates: Partial<Investor>
   ) => void;
-  initialize: () => void;
-  deletePool: (poolId: string) => void;
 
-  //founder
-  founders: Founder[];
-  assignInvestorToFounder: (founderId: string, investorId: string) => void;
-  unassignInvestorFromFounder: (founderId: string, investorId: string) => void;
+  // Founder Assignment
+  assignFounderToPool: (poolId: string, founderId: string) => void;
+  removeFounderFromPool: (poolId: string, founderId: string) => void;
+
+  // Initialization
+  initialize: () => void;
 };
 
 export const usePoolStore = create<PoolStore>()(
   persist(
     (set, get) => ({
       pools: {},
-      founders: [],
+      founders: [
+        { id: "founder-1", name: "Founder One", assignedInvestors: [] },
+        { id: "founder-2", name: "Founder Two", assignedInvestors: [] },
+      ],
       allInvestors: [],
 
       initialize: () => {
@@ -38,38 +49,92 @@ export const usePoolStore = create<PoolStore>()(
             id: `inv-${i}`,
             name: `Investor ${i}`,
             avatar: `https://i.pravatar.cc/150?img=${i}`,
-            company: `Company ${i % 10}`, // Now required
+            company: `Company ${i % 10}`,
             contact: i % 3 === 0 ? undefined : `contact${i}@example.com`,
           })),
         });
       },
 
-      createPool: () => {
+      createPool: (name: string, founderIds: string[] = []) => {
         const poolId = Date.now().toString();
         set((state) => ({
           pools: {
             ...state.pools,
             [poolId]: {
               id: poolId,
-              name: `Pool ${Object.keys(state.pools).length + 1}`,
-              weeks: Array(5).fill([]),
+              name,
+              weeks: [{ weekNumber: 1, investors: [] }],
+              assignedFounders: [...founderIds],
             },
           },
         }));
         return poolId;
       },
 
-      addToPool: (poolId, week, investorId) => {
+      addWeek: (poolId) => {
         set((state) => {
           const pool = state.pools[poolId];
-          if (!pool) return {};
+          if (!pool || pool.weeks.length >= 5) return {};
 
-          // Check if investor exists in any week
-          const exists = pool.weeks.flat().some((inv) => inv.id === investorId);
-          if (exists) return {};
+          const newWeekNumber = pool.weeks.length + 1;
+          const updatedWeeks = [
+            ...pool.weeks,
+            { weekNumber: newWeekNumber, investors: [] },
+          ];
 
-          // Add if week has <7 investors
-          if (pool.weeks[week].length >= 7) return {};
+          return {
+            pools: {
+              ...state.pools,
+              [poolId]: {
+                ...pool,
+                weeks: updatedWeeks,
+              },
+            },
+          };
+        });
+      },
+
+      removeWeek: (poolId, weekNumber) => {
+        set((state) => {
+          const pool = state.pools[poolId];
+          if (!pool || pool.weeks.length <= 1) return {};
+
+          const updatedWeeks = pool.weeks.filter(
+            (week) => week.weekNumber !== weekNumber
+          );
+
+          // Re-number weeks after deletion
+          const renumberedWeeks = updatedWeeks.map((week, index) => ({
+            ...week,
+            weekNumber: index + 1,
+          }));
+
+          return {
+            pools: {
+              ...state.pools,
+              [poolId]: {
+                ...pool,
+                weeks: renumberedWeeks,
+              },
+            },
+          };
+        });
+      },
+
+      addToPool: (poolId, weekIndex, investorId) => {
+        set((state) => {
+          const pool = state.pools[poolId];
+          if (!pool || weekIndex < 0 || weekIndex >= pool.weeks.length)
+            return {};
+
+          // Check if investor exists in any week of this pool
+          const investorExists = pool.weeks.some((week) =>
+            week.investors.some((inv) => inv.id === investorId)
+          );
+          if (investorExists) return {};
+
+          // Check if week has space (<7 investors)
+          if (pool.weeks[weekIndex].investors.length >= 7) return {};
 
           const investor = state.allInvestors.find(
             (inv) => inv.id === investorId
@@ -77,7 +142,10 @@ export const usePoolStore = create<PoolStore>()(
           if (!investor) return {};
 
           const updatedWeeks = [...pool.weeks];
-          updatedWeeks[week] = [...updatedWeeks[week], investor];
+          updatedWeeks[weekIndex] = {
+            ...updatedWeeks[weekIndex],
+            investors: [...updatedWeeks[weekIndex].investors, investor],
+          };
 
           return {
             pools: {
@@ -91,18 +159,22 @@ export const usePoolStore = create<PoolStore>()(
         });
       },
 
-      updateInvestor: (poolId, week, investorId, updates) => {
+      updateInvestor: (poolId, weekIndex, investorId, updates) => {
         set((state) => {
           const pool = state.pools[poolId];
-          if (!pool) return {};
+          if (!pool || weekIndex < 0 || weekIndex >= pool.weeks.length)
+            return {};
 
-          const updatedWeeks = pool.weeks.map((weekInvestors, w) =>
-            w === week
-              ? weekInvestors.map((inv) =>
-                  inv.id === investorId ? { ...inv, ...updates } : inv
-                )
-              : weekInvestors
-          );
+          const updatedWeeks = pool.weeks.map((week, idx) => {
+            if (idx !== weekIndex) return week;
+
+            return {
+              ...week,
+              investors: week.investors.map((inv) =>
+                inv.id === investorId ? { ...inv, ...updates } : inv
+              ),
+            };
+          });
 
           return {
             pools: {
@@ -116,7 +188,7 @@ export const usePoolStore = create<PoolStore>()(
         });
       },
 
-      deletePool: (poolId) => {
+      deletePool: (poolId: string) => {
         set((state) => {
           const newPools = { ...state.pools };
           delete newPools[poolId];
@@ -124,37 +196,48 @@ export const usePoolStore = create<PoolStore>()(
         });
       },
 
-      assignInvestorToFounder: (founderId, investorId) => {
-        set((state) => ({
-          founders: state.founders.map((founder) =>
-            founder.id === founderId
-              ? {
-                  ...founder,
-                  assignedInvestors: [...founder.assignedInvestors, investorId],
-                }
-              : founder
-          ),
-        }));
+      assignFounderToPool: (poolId: string, founderId: string) => {
+        set((state) => {
+          const pool = state.pools[poolId];
+          if (!pool || pool.assignedFounders.includes(founderId)) return {};
+          return {
+            pools: {
+              ...state.pools,
+              [poolId]: {
+                ...pool,
+                assignedFounders: [...pool.assignedFounders, founderId],
+              },
+            },
+          };
+        });
       },
 
-      unassignInvestorFromFounder: (founderId, investorId) => {
-        set((state) => ({
-          founders: state.founders.map((founder) =>
-            founder.id === founderId
-              ? {
-                  ...founder,
-                  assignedInvestors: founder.assignedInvestors.filter(
-                    (id) => id !== investorId
-                  ),
-                }
-              : founder
-          ),
-        }));
+      removeFounderFromPool: (poolId: string, founderId: string) => {
+        set((state) => {
+          const pool = state.pools[poolId];
+          if (!pool) return {};
+          return {
+            pools: {
+              ...state.pools,
+              [poolId]: {
+                ...pool,
+                assignedFounders: pool.assignedFounders.filter(
+                  (id) => id !== founderId
+                ),
+              },
+            },
+          };
+        });
       },
     }),
     {
       name: "investor-pools-storage",
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        pools: state.pools,
+        founders: state.founders,
+        allInvestors: state.allInvestors,
+      }),
     }
   )
 );
