@@ -4,6 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { use, useState } from "react";
 
+export async function generateStaticParams() {
+  // Return an array of possible founderIds
+  return [
+    { founderId: "founder-1" },
+    { founderId: "founder-2" },
+    // Add all possible founder IDs here
+  ];
+}
+
 export default function FounderDetailPage({
   params,
 }: {
