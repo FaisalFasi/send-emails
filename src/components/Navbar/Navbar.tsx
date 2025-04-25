@@ -1,7 +1,17 @@
+"use client";
+import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Navbar = () => {
+  const { currentUser, onAuthStateChanged, clearCurrentUser } = useAuthStore();
+
+  useEffect(() => {
+    onAuthStateChanged(currentUser);
+    return () => onAuthStateChanged(currentUser);
+  }, []);
+
+  console.log("Auth state changed", currentUser);
   return (
     <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
       <div className="navbar-brand">
@@ -9,14 +19,30 @@ const Navbar = () => {
       </div>
       <ul className="navbar-menu flex space-x-4">
         <li>
-          <Link href="/send-email">Email</Link>
+          <Link href="/send-email">Send-Emails</Link>
         </li>
-        <li>
-          <Link href="/login">Login</Link>
-        </li>
-        <li>
-          <Link href="/register">Register</Link>
-        </li>
+        {currentUser ? (
+          <>
+            <li>
+              {currentUser.email}
+              {/* <Link href="/profile">{currentUser.email}</Link> */}
+            </li>
+            <li>
+              <Link href="/" onClick={clearCurrentUser}>
+                Logout
+              </Link>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link href="/login">Login</Link>
+            </li>
+            <li>
+              <Link href="/register">Register</Link>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );
