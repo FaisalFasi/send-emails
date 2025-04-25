@@ -15,7 +15,6 @@ const serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
   universe_domain: process.env.NEXT_FIREBASE_UNIVERSE_DOMAIN,
 };
-console.log("Service account", serviceAccount);
 let firestore: Firestore;
 const currentApps = getApps();
 

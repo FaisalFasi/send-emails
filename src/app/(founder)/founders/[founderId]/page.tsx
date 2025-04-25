@@ -1,5 +1,6 @@
 "use client";
 import { usePoolStore } from "@/store/usePoolStore";
+import Image from "next/image";
 import Link from "next/link";
 import { use, useState } from "react";
 
@@ -41,7 +42,7 @@ export default function FounderDetailPage({
       <div className="flex justify-between items-start mb-6">
         <div>
           <h1 className="text-2xl font-bold">
-            {founder.name}'s Investor Pools
+            {founder.name}`&apos;`s Investor Pools
           </h1>
           <p className="text-gray-600 mt-1">
             {founderPools.length} pool(s) assigned
@@ -99,7 +100,9 @@ export default function FounderDetailPage({
                       key={investor.id}
                       className="bg-white p-4 rounded-lg shadow-sm text-center border"
                     >
-                      <img
+                      <Image
+                        width={64}
+                        height={64}
                         src={investor.avatar}
                         className="w-16 h-16 rounded-full mx-auto mb-3 object-cover"
                         alt={investor.name}

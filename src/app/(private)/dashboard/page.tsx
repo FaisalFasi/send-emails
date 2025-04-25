@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { usePoolStore } from "@/store/usePoolStore";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import Image from "next/image";
 
 export default function AdminPage() {
   const {
@@ -211,7 +212,9 @@ export default function AdminPage() {
                         key={investor.id}
                         className="flex items-center gap-2 bg-white p-2 rounded border hover:bg-gray-50"
                       >
-                        <img
+                        <Image
+                          width={32}
+                          height={32}
                           src={investor.avatar}
                           className="w-8 h-8 rounded-full"
                           alt={investor.name}

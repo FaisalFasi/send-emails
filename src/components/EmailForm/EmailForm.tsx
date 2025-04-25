@@ -12,7 +12,7 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/png",
   "image/webp",
 ];
-const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
+// const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
 
 const emailSchema = z.object({
   email: z.string().email(),
@@ -74,7 +74,7 @@ export default function EmailForm() {
               Send Us an Email
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Fill out the form below and we'll get back to you soon.
+              Fill out the form below and we`&apos;`ll get back to you soon.
             </p>
           </div>
 

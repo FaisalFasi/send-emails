@@ -17,7 +17,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-console.log("Firebase config", firebaseConfig);
 
 // Initialize Firebase
 const currentApps = getApps();
@@ -29,7 +28,6 @@ if (!currentApps.length) {
   const app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   storage = getStorage(app);
-  console.log("Firebase app already initialized");
 } else {
   const app = currentApps[0];
   auth = getAuth(app);

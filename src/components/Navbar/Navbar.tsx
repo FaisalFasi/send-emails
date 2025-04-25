@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
       <div className="navbar-brand">
-        <a href="/">Syrena</a>
+        <Link href="/">Syrena</Link>
       </div>
       <ul className="navbar-menu flex space-x-4">
         {currentUser ? (

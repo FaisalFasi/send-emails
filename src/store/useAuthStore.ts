@@ -7,7 +7,7 @@ import { auth } from "../../firebase/client";
 
 export const useAuthStore = create<AuthStoreType>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // state
       currentUser: null,
 
