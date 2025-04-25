@@ -18,15 +18,15 @@ const Navbar = () => {
         <a href="/">Syrena</a>
       </div>
       <ul className="navbar-menu flex space-x-4">
-        <li>
-          <Link href="/send-email">Send-Emails</Link>
-        </li>
         {currentUser ? (
           <>
             <li>
-              {currentUser.email}
-              {/* <Link href="/profile">{currentUser.email}</Link> */}
+              <Link href="/dashboard">DB</Link>
             </li>
+            <li>
+              <Link href="/send-email">Emails</Link>
+            </li>
+            <li className="max-w-20 overflow-hidden">{currentUser.email}</li>
             <li>
               <Link href="/" onClick={clearCurrentUser}>
                 Logout
