@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  output: "export",
-  // Enable dynamic routes on client side
-  trailingSlash: true,
-  skipTrailingSlashRedirect: true,
+  output: "export", // Changed from 'standalone' to 'export' for Firebase Hosting
+  distDir: "out",
+  images: {
+    unoptimized: true, // Required for static export
+  },
+  trailingSlash: true, // Critical for Firebase Hosting
 };
 
 export default nextConfig;
