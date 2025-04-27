@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { Founder, Investor, InvestorPool } from "@/types/InvestorsTypes";
+import { foundersData } from "@/lib/foundersData";
 
 type PoolStore = {
   pools: Record<string, InvestorPool>;
@@ -35,10 +36,7 @@ export const usePoolStore = create<PoolStore>()(
   persist(
     (set, get) => ({
       pools: {},
-      founders: [
-        { id: "founder-1", name: "Founder One", assignedInvestors: [] },
-        { id: "founder-2", name: "Founder Two", assignedInvestors: [] },
-      ],
+      founders: foundersData,
       allInvestors: [],
 
       initialize: () => {

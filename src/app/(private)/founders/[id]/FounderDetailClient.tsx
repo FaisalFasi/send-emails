@@ -3,15 +3,9 @@
 import { usePoolStore } from "@/store/usePoolStore";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 
-export default function FounderDetailClient({
-  params,
-}: {
-  params: Promise<{ founderId: string }>;
-}) {
-  const { founderId } = use(params);
-
+export default function FounderDetailClient({ _id }: { _id: string }) {
   const { pools, founders } = usePoolStore();
   const [currentWeek, setCurrentWeek] = useState(1);
   const [selectedPoolId, setSelectedPoolId] = useState<string | null>(null);
@@ -20,10 +14,9 @@ export default function FounderDetailClient({
   useEffect(() => {
     setIsLoading(false);
   }, []);
-
-  const founder = founders.find((f) => f.id === founderId);
+  const founder = founders.find((f) => f.id === _id);
   const founderPools = Object.values(pools).filter((pool) =>
-    pool.assignedFounders.includes(founderId)
+    pool.assignedFounders.includes(_id)
   );
 
   if (isLoading) {
@@ -51,7 +44,7 @@ export default function FounderDetailClient({
       <div className="flex justify-between items-start mb-6">
         <div>
           <h1 className="text-2xl font-bold">
-            {founder.name}`&apos;`s Investor Pools
+            {founder.name}&apos;s Investor Pools
           </h1>
           <p className="text-gray-600 mt-1">
             {founderPools.length} pool(s) assigned
