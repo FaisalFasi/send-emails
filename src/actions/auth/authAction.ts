@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers.js";
-import { auth } from "../../../firebase/server.ts";
+import { auth } from "../../../firebase/server";
 
 console.log("Admin email from env:", process.env.NEXT_ADMIN_EMAIL);
 const adminEmails = [
