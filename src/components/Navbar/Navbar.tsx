@@ -8,8 +8,8 @@ const Navbar = () => {
     useAuthStore();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(currentUser);
-    return () => unsubscribe;
+    onAuthStateChanged(currentUser);
+    return () => onAuthStateChanged(currentUser);
   }, []);
 
   return (
@@ -17,17 +17,19 @@ const Navbar = () => {
       <div className="navbar-brand">
         <Link href="/">Syrena</Link>
       </div>
-      <ul className="navbar-menu flex space-x-4">
+      <ul className="navbar-menu flex space-x-4 overflow-auto">
         <>
-          <li>
-            <Link href="/founders">Founder</Link>
-          </li>
           {customClaims?.admin && (
-            <li>
-              <Link href="/dashboard">DB</Link>
-            </li>
+            <>
+              <li>
+                <Link href="/founders">Founder</Link>
+              </li>
+              <li>
+                <Link href="/dashboard">DB</Link>
+              </li>
+            </>
           )}
-          {!customClaims?.admin && <li>Not Admin</li>}
+          {customClaims && !customClaims?.admin && <li>Not Admin</li>}
           <li>
             <Link href="/send-email">Emails</Link>
           </li>
@@ -36,7 +38,7 @@ const Navbar = () => {
           <>
             <li className="max-w-20 overflow-hidden">{currentUser?.email}</li>
             <li>
-              <Link href="/" onClick={clearCurrentUser}>
+              <Link href="/login" onClick={clearCurrentUser}>
                 Logout
               </Link>
             </li>

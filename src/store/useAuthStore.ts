@@ -17,13 +17,18 @@ export const useAuthStore = create<AuthStoreType>()(
       setCurrentUser: (currentUser: User | null) => {
         set({ currentUser });
       },
-      clearCurrentUser: () => {
+      clearCurrentUser: async () => {
         auth.signOut();
-        set({ currentUser: null });
+        localStorage.removeItem("firebaseAuthToken");
+        localStorage.removeItem("firebaseAuthRefreshToken");
+        sessionStorage.clear();
+
+        set({ currentUser: null, customClaims: null });
+        // window.location.href = "/login";
       },
       onAuthStateChanged: (currentUser: User | null) => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
-          set({ currentUser: user ?? null });
+          // set({ currentUser: user ?? null });
 
           if (user) {
             const toketnResult = await user.getIdTokenResult();
@@ -31,7 +36,7 @@ export const useAuthStore = create<AuthStoreType>()(
             const refreshToken = user.refreshToken;
             const claims = toketnResult.claims;
 
-            set({ customClaims: claims ?? null });
+            set({ currentUser: user, customClaims: claims ?? null });
 
             if (token && refreshToken) {
               await setToken({
@@ -42,6 +47,7 @@ export const useAuthStore = create<AuthStoreType>()(
             console.log("User is signed in:", user);
           } else {
             await removeToken();
+            set({ currentUser: null, customClaims: null });
             console.log("No user is signed in");
           }
         });
@@ -59,8 +65,9 @@ export const useAuthStore = create<AuthStoreType>()(
       loginWithGoogle: async () => {
         try {
           const provider = new GoogleAuthProvider();
-          await signInWithPopup(auth, provider);
-          console.log("User logged in with Google");
+          const loggedInUser = await signInWithPopup(auth, provider);
+
+          set({ currentUser: loggedInUser.user });
         } catch (error) {
           console.error("Error logging in with Google", error);
         }
