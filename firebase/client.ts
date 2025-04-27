@@ -3,7 +3,6 @@ import { initializeApp, getApps } from "firebase/app";
 import { Auth, getAuth } from "firebase/auth";
 import { FirebaseStorage, getStorage } from "firebase/storage";
 import "dotenv/config";
-console.log("API KEY----", process.env.NEXT_PUBLIC_FIREBASE_API_KEY); // remove this after you've confirmed it is working
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries

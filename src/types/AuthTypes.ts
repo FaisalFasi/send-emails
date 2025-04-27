@@ -1,4 +1,4 @@
-import { User } from "firebase/auth";
+import { ParsedToken, User } from "firebase/auth";
 
 type StoreActions = {
   setCurrentUser: (currentUser: User | null) => void;
@@ -11,4 +11,5 @@ type StoreActions = {
 
 export type AuthStoreType = {
   currentUser: User | null;
+  customClaims: ParsedToken | null;
 } & StoreActions;

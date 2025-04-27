@@ -7,8 +7,8 @@ const Navbar = () => {
   const { currentUser, onAuthStateChanged, clearCurrentUser } = useAuthStore();
 
   useEffect(() => {
-    onAuthStateChanged(currentUser);
-    return () => onAuthStateChanged(currentUser);
+    const unsubscribe = onAuthStateChanged(currentUser);
+    return () => unsubscribe;
   }, []);
 
   return (
