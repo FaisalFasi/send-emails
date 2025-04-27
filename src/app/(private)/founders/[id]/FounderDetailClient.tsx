@@ -125,7 +125,7 @@ export default function FounderDetailClient({ _id }: { _id: string }) {
             No pools assigned to this founder yet
           </p>
           <Link
-            href="/admin"
+            href="/dashboard"
             className="inline-block bg-blue-500 text-white px-4 py-2 rounded"
           >
             Assign Pools in Admin
