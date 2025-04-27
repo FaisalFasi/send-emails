@@ -4,7 +4,8 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 
 const Navbar = () => {
-  const { currentUser, onAuthStateChanged, clearCurrentUser } = useAuthStore();
+  const { currentUser, onAuthStateChanged, clearCurrentUser, customClaims } =
+    useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(currentUser);
@@ -21,9 +22,12 @@ const Navbar = () => {
           <li>
             <Link href="/founders">Founder</Link>
           </li>
-          <li>
-            <Link href="/dashboard">DB</Link>
-          </li>
+          {customClaims?.admin && (
+            <li>
+              <Link href="/dashboard">DB</Link>
+            </li>
+          )}
+          {!customClaims?.admin && <li>Not Admin</li>}
           <li>
             <Link href="/send-email">Emails</Link>
           </li>

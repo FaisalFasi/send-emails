@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers.js";
-import { auth } from "../../../firebase/server.ts.js";
+import { auth } from "../../../firebase/server.ts";
 
 export const setToken = async ({
   token,
