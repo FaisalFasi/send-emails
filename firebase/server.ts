@@ -33,4 +33,6 @@ if (!currentApps.length) {
   firestore = getFirestore(app);
   auth = getAuth(app);
 }
-export { firestore, auth };
+
+const db = firestore;
+export { firestore, auth, db, admin };

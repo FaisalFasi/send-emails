@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "2mb", // Optional size limit
     },
   },
+  trailingSlash: true,
 };
 
 export default nextConfig;

@@ -17,15 +17,19 @@ const Navbar = () => {
       <div className="navbar-brand">
         <Link href="/">Syrena</Link>
       </div>
-      <ul className="navbar-menu flex space-x-4 overflow-auto">
+      <ul className="navbar-menu flex space-x-4 items-center overflow-auto">
         <>
           {customClaims?.admin && (
             <>
+              <li className="max-w-20 overflow-hidden">
+                <Link href="/dashboard">Admin Dashboard</Link>
+              </li>
+              <li className="max-w-20 overflow-hidden">
+                <Link href="/investors">Add Investors</Link>
+              </li>
+
               <li>
                 <Link href="/founders">Founder</Link>
-              </li>
-              <li>
-                <Link href="/dashboard">DB</Link>
               </li>
             </>
           )}
@@ -36,7 +40,7 @@ const Navbar = () => {
         </>
         {currentUser ? (
           <>
-            <li className="max-w-20 overflow-hidden">{currentUser?.email}</li>
+            {/* <li className="max-w-20 overflow-hidden">{currentUser?.email}</li> */}
             <li>
               <Link href="/login" onClick={clearCurrentUser}>
                 Logout
