@@ -38,3 +38,29 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// ✅ Add this for GET
+export async function GET() {
+  try {
+    const snapshot = await db
+      .collection("InvestorsProfile")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    console.log("Snapshot data:", snapshot);
+
+    const investors = snapshot?.docs?.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    console.log("Investors data:", investors);
+
+    return NextResponse.json(investors, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching investors:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch investors" },
+      { status: 500 }
+    );
+  }
+}

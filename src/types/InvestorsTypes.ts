@@ -24,3 +24,31 @@ export type InvestorPool = {
   weeks: InvestorWeek[];
   assignedFounders: string[]; // Founder IDs
 };
+
+export type PoolStore = {
+  pools: Record<string, InvestorPool>;
+  founders: Founder[];
+  allInvestors: Investor[];
+
+  // Pool Management
+  createPool: (name: string, founderIds?: string[]) => string;
+  addWeek: (poolId: string) => void;
+  removeWeek: (poolId: string, weekNumber: number) => void;
+  deletePool: (poolId: string) => void;
+
+  // Investor Assignment
+  addToPool: (poolId: string, weekIndex: number, investorId: string) => void;
+  updateInvestor: (
+    poolId: string,
+    weekIndex: number,
+    investorId: string,
+    updates: Partial<Investor>
+  ) => void;
+
+  // Founder Assignment
+  assignFounderToPool: (poolId: string, founderId: string) => void;
+  removeFounderFromPool: (poolId: string, founderId: string) => void;
+
+  // Initialization
+  initialize: () => void;
+};

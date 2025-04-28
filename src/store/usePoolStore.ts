@@ -1,36 +1,8 @@
 // stores/usePoolStore.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { Founder, Investor, InvestorPool } from "@/types/InvestorsTypes";
+import { PoolStore } from "@/types/InvestorsTypes";
 import { foundersData } from "@/lib/foundersData";
-
-type PoolStore = {
-  pools: Record<string, InvestorPool>;
-  founders: Founder[];
-  allInvestors: Investor[];
-
-  // Pool Management
-  createPool: (name: string, founderIds?: string[]) => string;
-  addWeek: (poolId: string) => void;
-  removeWeek: (poolId: string, weekNumber: number) => void;
-  deletePool: (poolId: string) => void;
-
-  // Investor Assignment
-  addToPool: (poolId: string, weekIndex: number, investorId: string) => void;
-  updateInvestor: (
-    poolId: string,
-    weekIndex: number,
-    investorId: string,
-    updates: Partial<Investor>
-  ) => void;
-
-  // Founder Assignment
-  assignFounderToPool: (poolId: string, founderId: string) => void;
-  removeFounderFromPool: (poolId: string, founderId: string) => void;
-
-  // Initialization
-  initialize: () => void;
-};
 
 export const usePoolStore = create<PoolStore>()(
   persist(
@@ -39,18 +11,40 @@ export const usePoolStore = create<PoolStore>()(
       founders: foundersData,
       allInvestors: [],
 
-      initialize: () => {
-        if (get().allInvestors.length > 0) return;
+      initialize: async () => {
+        // if (get().allInvestors.length > 0) return;
+        try {
+          const response = await fetch("/api/investors");
+          const data = await response.json();
+          console.log("Fetched investors:", data);
+          if (Array.isArray(data)) {
+            set({ allInvestors: data });
+          } else {
+            console.error("Invalid data format", data);
+          }
 
-        set({
-          allInvestors: Array.from({ length: 50 }, (_, i) => ({
-            id: `inv-${i}`,
-            name: `Investor ${i}`,
-            avatar: `https://i.pravatar.cc/150?img=${i}`,
-            company: `Company ${i % 10}`,
-            contact: i % 3 === 0 ? undefined : `contact${i}@example.com`,
-          })),
-        });
+          set({
+            allInvestors: data?.map((investor: any, index: number) => ({
+              id: investor?.id,
+              name: investor?.firstName + ` ` + investor.lastName || "Unknown",
+              avatar:
+                investor?.avatar || `https://i.pravatar.cc/150?img=${index}`,
+              company: investor?.company || "Unknown",
+              contact: investor?.contact || undefined,
+            })),
+          });
+        } catch (error) {
+          set({
+            allInvestors: Array.from({ length: 50 }, (_, i) => ({
+              id: `inv-${i}`,
+              name: `Investor ${i}`,
+              avatar: `https://i.pravatar.cc/150?img=${i}`,
+              company: `Company ${i % 10}`,
+              contact: i % 3 === 0 ? undefined : `contact${i}@example.com`,
+            })),
+          });
+          console.error("Failed to fetch investors", error);
+        }
       },
 
       createPool: (name: string, founderIds: string[] = []) => {

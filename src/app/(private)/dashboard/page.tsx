@@ -85,7 +85,6 @@ export default function AdminPage() {
 
       {/* Pool Management Section */}
       <PoolManager />
-      {/* Delete Confirmation Modal */}
     </div>
   );
 }
