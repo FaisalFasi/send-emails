@@ -5,19 +5,20 @@ import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal"
 import PoolManager from "@/components/PoolManager/PoolManager";
 
 export default function AdminPage() {
-  const { founders, createPool, initialize } = usePoolStore();
+  const { founders, createPool, initialize, fetchPools } = usePoolStore();
 
   const [newPoolName, setNewPoolName] = useState("");
   const [selectedFounders, setSelectedFounders] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
+    fetchPools();
     const init = async () => {
       await initialize();
       setIsInitialized(true);
     };
     init();
-  }, [initialize]);
+  }, [initialize, fetchPools]);
 
   const handleCreatePool = () => {
     if (!newPoolName.trim()) return;

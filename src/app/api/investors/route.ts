@@ -47,13 +47,10 @@ export async function GET() {
       .orderBy("createdAt", "desc")
       .get();
 
-    console.log("Snapshot data:", snapshot);
-
     const investors = snapshot?.docs?.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-    console.log("Investors data:", investors);
 
     return NextResponse.json(investors, { status: 200 });
   } catch (error) {

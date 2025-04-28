@@ -26,11 +26,13 @@ export type InvestorPool = {
 };
 
 export type PoolStore = {
+  // record is a key-value pair
   pools: Record<string, InvestorPool>;
   founders: Founder[];
   allInvestors: Investor[];
 
   // Pool Management
+  fetchPools: () => void;
   createPool: (name: string, founderIds?: string[]) => string;
   addWeek: (poolId: string) => void;
   removeWeek: (poolId: string, weekNumber: number) => void;

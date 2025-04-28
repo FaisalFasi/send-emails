@@ -29,6 +29,7 @@ const PoolManager = () => {
             <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4 gap-4">
               <div className="flex-1">
                 <h2 className="text-xl font-bold break-all">{pool.name}</h2>
+
                 <div className="mt-2">
                   <label className="font-medium mr-2">Assigned Founders:</label>
                   {pool.assignedFounders.length > 0 ? (
@@ -73,7 +74,7 @@ const PoolManager = () => {
                   </button>
                 )}
                 <button
-                  onClick={() => setPoolToDelete(poolId)}
+                  onClick={() => setPoolToDelete(pool?.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                 >
                   Delete Pool
