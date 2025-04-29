@@ -10,7 +10,6 @@ export async function PUT(
   try {
     const poolId = await params.poolId; // Get pool ID from URL params
     const data = await req.json(); // Get the updated pool data from the request body
-    console.log("Received data to update:", data);
 
     // Check if poolId is valid
     if (!poolId || !data) {
@@ -58,7 +57,6 @@ export async function DELETE(
   try {
     // Proper way to access params in Next.js 13+ App Router
     const poolId = params.poolId;
-    console.log("Received poolId to delete:", poolId);
 
     if (!poolId || poolId === "0") {
       return NextResponse.json(

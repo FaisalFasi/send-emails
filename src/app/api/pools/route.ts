@@ -6,7 +6,6 @@ import { admin } from "../../../../firebase/server";
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    console.log("Received data:", data);
 
     const timestampNow = admin.firestore.Timestamp.now();
 
@@ -15,8 +14,6 @@ export async function POST(req: Request) {
       createdAt: timestampNow,
       updatedAt: timestampNow,
     };
-
-    console.log("Data with timestamps:", dataWithTimestamps);
 
     const docRef = await db
       .collection("Pools")
